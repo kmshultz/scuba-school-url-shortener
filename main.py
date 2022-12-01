@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 import string
 import random
+import os
 
 app = Flask(__name__)
 
@@ -17,7 +18,8 @@ def index():
             flash("The URL is required!")
             return redirect(url_for("index"))
 
-        id = "".join(random.choices(string.ascii_letters, k=6))
+        url_prefix = os.environ.get("URL_PREFIX") if os.environ.get("URL_PREFIX") is not None else ""
+        id = "%s-%s" % (url_prefix, "".join(random.choices(string.ascii_letters, k=6)))
 
         short_url = request.host_url + id
         urls_db[id] = request.form["url"]
